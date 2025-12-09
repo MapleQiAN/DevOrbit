@@ -137,7 +137,6 @@ DevOrbit 的目标是成为你做自我复盘时的「数据底座」，而不�
   - Alembic
 - **任务调度 / 异步任务**
   - 轻量模式：APScheduler
-  - 进阶模式（可选）：Celery + Redis
 - **第三方集成**
   - GitHub OAuth 登录
   - GitHub REST API（仓库、events、统计等）
@@ -161,7 +160,6 @@ DevOrbit 的目标是成为你做自我复盘时的「数据底座」，而不�
   - `api`：FastAPI 服务
   - `web`：前端静态资源（nginx）
   - `db`：PostgreSQL（生产推荐）
-  - `redis`：Celery 任务队列（可选）
 - 支持「开发模式」下的轻量运行：
   - FastAPI + SQLite + 前端 dev server 即可使用
 

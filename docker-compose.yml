@@ -95,27 +95,8 @@ services:
     
     restart: unless-stopped
 
-  # Redis 缓存服务（可选）
-  redis:
-    image: redis:7-alpine
-    container_name: devorbit-redis
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - devorbit-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
 volumes:
   postgres_data:
-    driver: local
-  redis_data:
     driver: local
 
 networks:
