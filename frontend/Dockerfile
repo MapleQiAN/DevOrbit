@@ -5,10 +5,11 @@ FROM node:18-alpine as builder
 WORKDIR /app
 
 # 复制 package 文件
-COPY package.json package-lock.json ./
+COPY package.json ./
+COPY package-lock.json* ./
 
 # 安装依赖
-RUN npm ci
+RUN npm ci --prefer-offline --no-audit || npm install
 
 # 复制源代码
 COPY . .
