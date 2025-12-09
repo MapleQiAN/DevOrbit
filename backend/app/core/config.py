@@ -3,6 +3,7 @@
 从环境变量读取配置，支持开发和生产环境
 """
 from typing import List
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -34,7 +35,30 @@ class Settings(BaseSettings):
     API_RELOAD: bool = True
 
     # CORS 配置
-    CORS_ORIGINS: List[str] = ["*"]
+    CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:13233"]
+
+    @field_validator("CORS_ORIGINS", mode="before")
+    @classmethod
+    def split_cors_origins(cls, v):
+        """
+        支持使用逗号分隔的字符串或 JSON 数组形式的环境变量值。
+        示例：
+        - CORS_ORIGINS=http://a.com,http://b.com
+        - CORS_ORIGINS='["http://a.com", "http://b.com"]'
+        """
+        if isinstance(v, str):
+            v = v.strip()
+            if v.startswith("["):
+                # JSON 列表字符串
+                try:
+                    import json
+
+                    return json.loads(v)
+                except Exception:
+                    pass
+            # 逗号分隔
+            return [item.strip() for item in v.split(",") if item.strip()]
+        return v
 
     class Config:
         env_file = ".env"
