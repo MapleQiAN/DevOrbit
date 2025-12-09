@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, nextTick } from 'vue'
 import * as echarts from 'echarts'
 import { getDailyStats } from '@/api/github'
 import type { GithubDailyStat } from '@/api/github'
@@ -175,12 +175,14 @@ async function loadData() {
   try {
     const response = await getDailyStats(fromDate.value, toDate.value)
     stats.value = response.data
-    renderChart()
   } catch (err: any) {
     error.value = err.response?.data?.detail || '加载数据失败'
     console.error('Failed to load GitHub stats:', err)
   } finally {
     isLoading.value = false
+    // 确保图表容器已经渲染再初始化/更新图表
+    await nextTick()
+    renderChart()
   }
 }
 
