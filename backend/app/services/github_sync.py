@@ -4,12 +4,17 @@ GitHub 数据同步服务
 """
 from datetime import date, datetime, timedelta, timezone
 from typing import Dict, List, Optional, Tuple
+import collections
+import logging
+import sys
 
 import httpx
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.models import GithubDailyStat, GithubRepo, User
+
+logger = logging.getLogger(__name__)
 
 
 async def fetch_user_repos(github_token: str) -> List[dict]:
@@ -182,20 +187,33 @@ def aggregate_daily_stats(events: List[dict]) -> Dict[date, Dict[str, int]]:
             # 统计 push 中的 commit 数
             payload = event.get("payload", {})
             commits = payload.get("commits", [])
-            stats[event_date]["commit_count"] += len(commits)
+            if commits:
+                stats[event_date]["commit_count"] += len(commits)
+            else:
+                # 有些事件只包含 size，不返回 commits 列表
+                size = payload.get("size")
+                if isinstance(size, int) and size > 0:
+                    stats[event_date]["commit_count"] += size
+                else:
+                    # 最少按 1 次提交计入，避免被漏记
+                    stats[event_date]["commit_count"] += 1
 
         elif event_type == "PullRequestEvent":
             action = event.get("payload", {}).get("action", "")
-            if action == "opened":
+            # opened / reopened / closed (包含 merged) 都计一次
+            if action in {"opened", "reopened", "closed"}:
                 stats[event_date]["pr_count"] += 1
 
         elif event_type == "IssuesEvent":
             action = event.get("payload", {}).get("action", "")
-            if action == "opened":
+            if action in {"opened", "reopened"}:
                 stats[event_date]["issue_count"] += 1
 
         elif event_type == "WatchEvent":
             # Star 事件
+            stats[event_date]["star_delta"] += 1
+        elif event_type == "PublicEvent":
+            # 仓库公开事件，按 1 次 star 增量处理，避免丢失
             stats[event_date]["star_delta"] += 1
 
     return stats
@@ -255,8 +273,21 @@ async def sync_github_data(
     # 第 2 步：获取用户事件
     events = await fetch_user_events(github_token, days=90)
 
+    # 事件类型分布日志，便于排查为何统计为 0
+    event_types = collections.Counter(e.get("type", "") for e in events)
+    first_event = events[0] if events else None
+
+    def _log(msg: str):
+        # print + flush 确保在容器/终端可见
+        print(msg, file=sys.stdout, flush=True)
+        logger.info(msg)
+
+    _log(f"[github_sync] events total={len(events)} types={dict(event_types)}")
+    _log(f"[github_sync] first event={first_event}")
+
     # 第 3 步：聚合每日统计
     daily_stats = aggregate_daily_stats(events)
+    _log(f"[github_sync] aggregated days={len(daily_stats)}")
 
     # 第 4 步：更新数据库中的每日统计
     stats_updated = 0
