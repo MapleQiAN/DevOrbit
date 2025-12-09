@@ -15,7 +15,7 @@ RUN npm ci --prefer-offline --no-audit || npm install
 COPY . .
 
 # 构建应用
-RUN npm run build
+RUN npm run build || (npm install && vite build)
 
 # Stage 2: 运行阶段 - 使用 Nginx
 FROM nginx:alpine
