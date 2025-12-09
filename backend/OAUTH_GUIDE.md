@@ -8,8 +8,8 @@
 
 **填写信息**:
 - Application name: `DevOrbit`
-- Homepage URL: `http://localhost:3000`
-- Authorization callback URL: `http://localhost:3000/auth/github/callback`
+- Homepage URL: `http://localhost:13233`
+- Authorization callback URL: `http://localhost:13233/auth/github/callback`
 
 **获取凭证**:
 - Client ID
@@ -22,7 +22,7 @@
 ```env
 GITHUB_CLIENT_ID=your_client_id_here
 GITHUB_CLIENT_SECRET=your_client_secret_here
-GITHUB_REDIRECT_URI=http://localhost:3000/auth/github/callback
+GITHUB_REDIRECT_URI=http://localhost:13233/auth/github/callback
 ```
 
 ### 3. 启动后端
@@ -113,8 +113,8 @@ curl "http://localhost:8000/auth/github/callback?code=abc123"
     "github_id": 12345678,
     "github_login": "octocat",
     "avatar_url": "https://avatars.githubusercontent.com/u/1?v=4",
-    "created_at": "2025-12-09T11:50:21.953000",
-    "updated_at": "2025-12-09T11:50:21.953000"
+    "created_at": "2025-12-09T11:50:21.9513233",
+    "updated_at": "2025-12-09T11:50:21.9513233"
   }
 }
 ```

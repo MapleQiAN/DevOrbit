@@ -1,7 +1,13 @@
 import axios, { AxiosInstance } from 'axios'
 import { useAuthStore } from '@/stores/auth'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+// 优先使用环境变量；若未配置，则在本地开发使用 localhost，其他环境走同源反向代理 /api
+const envBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim()
+const API_BASE_URL =
+  envBaseUrl ||
+  (typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:8000'
+    : '/api')
 
 const client: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,

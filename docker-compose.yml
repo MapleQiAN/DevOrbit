@@ -82,7 +82,8 @@ services:
       dockerfile: Dockerfile
     container_name: devorbit-frontend
     environment:
-      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+      # 在容器网络中直接访问后端服务；如需自定义可覆盖 VITE_API_BASE_URL
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://backend:8000}
     
     depends_on:
       - backend
