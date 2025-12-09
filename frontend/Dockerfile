@@ -30,12 +30,12 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 RUN addgroup -S -g 101 nginx 2>/dev/null || true && \
     adduser -S -D -H -u 101 -h /var/cache/nginx -s /sbin/nologin -G nginx -g nginx nginx 2>/dev/null || true
 
-# 暴露端口
-EXPOSE 80
+# 暴露端口（改为非特权端口，避免 80 端口权限问题）
+EXPOSE 13233
 
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost/health || exit 1
+    CMD wget --quiet --tries=1 --spider http://localhost:813233/health || exit 1
 
 # 启动 Nginx
 CMD ["nginx", "-g", "daemon off;"]

@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     API_RELOAD: bool = True
 
     # CORS 配置
-    CORS_ORIGINS: List[str] = ["http://localhost:5173", "http://localhost:3000"]
+    CORS_ORIGINS: List[str] = ["*"]
 
     class Config:
         env_file = ".env"
