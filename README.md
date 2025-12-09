@@ -264,12 +264,69 @@ DevOrbit 的目标是成为你做自我复盘时的「数据底座」，而不�
 
 ---
 
+## 🐳 Docker 一键部署
+
+DevOrbit 现已支持完整的 Docker 一键部署方案！
+
+### 快速开始（3 步）
+
+```bash
+# 1. 复制环境配置
+cp .env.example .env
+
+# 2. 编辑 .env，填入 GitHub OAuth 凭证
+nano .env
+
+# 3. 一键启动
+docker-compose up -d
+```
+
+**完成！** 应用现在运行在：
+- 🌐 前端: http://localhost
+- 🔌 后端 API: http://localhost:8000
+- 📚 API 文档: http://localhost:8000/docs
+
+### 使用启动脚本
+
+```bash
+# 开发模式启动
+./start.sh
+
+# 生产模式启动
+./start.sh --prod
+
+# 重新构建并启动
+./start.sh --build --logs
+```
+
+### 使用 Makefile
+
+```bash
+# 快速启动
+make quick-start
+
+# 启动服务
+make up
+
+# 查看日志
+make logs
+```
+
+### 详细文档
+
+- 📖 [Docker 完整部署指南](./DOCKER_DEPLOYMENT.md) - 详细的部署步骤和故障排查
+- 📋 [Docker 快速参考](./DOCKER_QUICK_REFERENCE.md) - 常用命令速查表
+- 📝 [部署总结](./DOCKER_DEPLOYMENT_SUMMARY.md) - 实现细节和架构说明
+
+---
+
 ## 🧪 开发状态
 
 项目目前处于 **规划 / 初始开发阶段**：
 
 - ✅ 核心数据模型与架构设计基本确定  
 - ✅ 技术栈选型完成  
+- ✅ Docker 一键部署方案完成
 - ⏳ 正在逐步实现后端与前端基础骨架  
 
 欢迎通过 issue / PR 一起参与设计与实现。
