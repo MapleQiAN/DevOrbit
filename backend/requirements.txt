@@ -2,34 +2,34 @@
 # Python 3.10+
 
 # Web Framework
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
+fastapi
+uvicorn[standard]
 
 # Database
-sqlalchemy==2.0.23
-alembic==1.12.1
-aiosqlite==0.19.0
+sqlalchemy
+alembic
+aiosqlite
 
 # Data Validation
-pydantic==2.5.0
-pydantic-settings==2.1.0
+pydantic
+pydantic-settings
 
 # HTTP Client
-httpx==0.25.2
+httpx
 
 # Authentication
-pyjwt==2.8.1
+pyjwt
 
 # Configuration
-python-dotenv==1.0.0
+python-dotenv
 
 # Utilities
-python-multipart==0.0.6
+python-multipart
 
 # Development (optional)
-pytest==7.4.3
-pytest-asyncio==0.21.1
-black==23.12.0
-ruff==0.1.8
-mypy==1.7.1
+pytest
+pytest-asyncio
+black
+ruff
+mypy
 
