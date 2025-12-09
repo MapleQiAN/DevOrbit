@@ -21,7 +21,8 @@ class Settings(BaseSettings):
     # GitHub OAuth 配置
     GITHUB_CLIENT_ID: str = ""
     GITHUB_CLIENT_SECRET: str = ""
-    GITHUB_REDIRECT_URI: str = "http://localhost:3000/auth/github/callback"
+    # 与前端端口保持一致，当前前端端口为 13233
+    GITHUB_REDIRECT_URI: str = "http://localhost:13233/auth/github/callback"
     GITHUB_API_BASE_URL: str = "https://api.github.com"
 
     # JWT 配置
