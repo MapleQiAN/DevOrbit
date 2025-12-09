@@ -8,7 +8,7 @@
 
 - **Python**: 3.10 或更高版本
 - **Node.js**: 16.0 或更高版本
-- **npm** 或 **yarn**
+- **pnpm**（建议通过 Corepack 启用）
 - **GitHub 账户**（用于 OAuth 登录）
 
 ---
@@ -94,7 +94,8 @@ curl http://localhost:8000/health
 
 ```bash
 cd frontend
-npm install
+corepack enable
+pnpm install
 ```
 
 ### 2. 配置环境变量
@@ -109,7 +110,7 @@ EOF
 ### 3. 启动开发服务器
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 你应该看到：
@@ -227,7 +228,7 @@ pip install -e .
 **解决**:
 ```bash
 cd frontend
-npm install
+pnpm install
 ```
 
 ### Q3: 登录时提示 "GitHub OAuth 配置不完整"

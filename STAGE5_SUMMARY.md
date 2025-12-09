@@ -274,13 +274,13 @@ GithubDailyChart 组件加载
 
 ```bash
 cd frontend
-npm install
+pnpm install
 ```
 
 ### 步骤 2: 启动开发服务器
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ### 步骤 3: 完整的端到端测试

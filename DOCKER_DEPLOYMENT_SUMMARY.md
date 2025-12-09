@@ -152,7 +152,7 @@ Redis
 - Stage 2: 运行阶段（最小化镜像大小）
 
 **前端 Dockerfile**：
-- Stage 1: 构建阶段（npm build）
+- Stage 1: 构建阶段（pnpm build）
 - Stage 2: Nginx 运行阶段
 
 ### 2. 健康检查

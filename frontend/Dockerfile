@@ -4,18 +4,20 @@ FROM node:18-alpine as builder
 
 WORKDIR /app
 
+# 启用 corepack 并准备 pnpm（使用 package.json 中声明的版本）
+RUN corepack enable
+
 # 复制 package 文件
-COPY package.json ./
-COPY package-lock.json* ./
+COPY package.json pnpm-lock.yaml ./
 
 # 安装依赖
-RUN npm ci --prefer-offline --no-audit || npm install
+RUN corepack install && pnpm install --frozen-lockfile
 
 # 复制源代码
 COPY . .
 
 # 构建应用
-RUN npm run build
+RUN pnpm run build
 
 # Stage 2: 运行阶段 - 使用 Nginx
 FROM nginx:alpine

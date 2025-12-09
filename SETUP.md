@@ -9,7 +9,7 @@
 - **操作系统**: Windows / macOS / Linux
 - **Python**: 3.10 或更高版本
 - **Node.js**: 16.0 或更高版本
-- **npm** 或 **yarn**: 用于前端包管理
+- **pnpm**: 用于前端包管理（建议通过 Corepack 启用）
 
 ### 检查环境
 
@@ -22,8 +22,8 @@ python3 --version
 # 检查 Node.js 版本
 node --version
 
-# 检查 npm 版本
-npm --version
+# 检查 pnpm 版本（首次可先执行 corepack enable）
+pnpm --version
 ```
 
 如果版本不符，请访问以下链接下载安装：

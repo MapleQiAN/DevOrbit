@@ -1,6 +1,7 @@
 {
   "name": "devorbit-frontend",
   "version": "0.1.0",
+  "packageManager": "pnpm@10.22.0",
   "type": "module",
   "description": "DevOrbit - Personal Developer Digital Resume Aggregation Platform",
   "scripts": {

@@ -43,8 +43,8 @@ python -m uvicorn app.main:app --reload
 
 ```bash
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 ### 第四步：完整测试
@@ -347,7 +347,7 @@ python -m uvicorn app.main:app --reload
 
 # 前端
 cd frontend
-npm run dev
+pnpm run dev
 ```
 
 ### 生产环境（待实现）

@@ -295,7 +295,7 @@ router.beforeEach((to, from, next) => {
 
 ```bash
 cd frontend
-npm install
+pnpm install
 ```
 
 ### 步骤 2: 配置环境变量
@@ -311,7 +311,7 @@ VITE_API_BASE_URL=http://localhost:8000
 ### 步骤 3: 启动开发服务器
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 你应该看到类似的输出：
