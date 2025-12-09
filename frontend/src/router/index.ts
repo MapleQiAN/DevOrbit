@@ -1,4 +1,10 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import {
+  createRouter,
+  createWebHistory,
+  type NavigationGuardNext,
+  type RouteLocationNormalized,
+  type RouteRecordRaw,
+} from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 const routes: RouteRecordRaw[] = [
@@ -42,7 +48,8 @@ const router = createRouter({
 })
 
 // 路由守卫：检查认证状态
-router.beforeEach((to, from, next) => {
+router.beforeEach(
+  (to: RouteLocationNormalized, _from: RouteLocationNormalized, next: NavigationGuardNext) => {
   const authStore = useAuthStore()
   const requiresAuth = to.meta.requiresAuth !== false
 
@@ -55,7 +62,8 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
   }
-})
+  }
+)
 
 export default router
 

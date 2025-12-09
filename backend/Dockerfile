@@ -1,13 +1,13 @@
 # 多阶段构建 - 后端 API 服务
 # Stage 1: 构建阶段
-FROM python:3.10-slim as builder
+FROM python:3.10-slim-bookworm as builder
 
 WORKDIR /app
 
-# 安装系统依赖
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
+# 安装系统依赖（增加重试以缓解 503）
+RUN apt-get update -o Acquire::Retries=3 && \
+    apt-get install -y --no-install-recommends gcc && \
+    rm -rf /var/lib/apt/lists/*
 
 # 复制依赖文件
 COPY pyproject.toml requirements.txt ./
@@ -17,14 +17,14 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
     pip install --no-cache-dir -e .
 
 # Stage 2: 运行阶段
-FROM python:3.10-slim
+FROM python:3.10-slim-bookworm
 
 WORKDIR /app
 
-# 安装运行时依赖
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+# 安装运行时依赖（增加重试以缓解 503）
+RUN apt-get update -o Acquire::Retries=3 && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
 
 # 从构建阶段复制已安装的包
 COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
