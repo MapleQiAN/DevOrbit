@@ -49,20 +49,30 @@
 
         <!-- 同步按钮 -->
         <div class="sync-section">
-          <button
-            @click="handleSync"
-            :disabled="isSyncing"
-            class="btn-sync"
-          >
-            <span v-if="!isSyncing">🔄 同步 GitHub 数据</span>
-            <span v-else>同步中...</span>
-          </button>
-          <p v-if="syncMessage" class="sync-message">{{ syncMessage }}</p>
+          <div class="sync-controls">
+            <label class="sync-label">同步时间范围：</label>
+            <input v-model="syncFromDate" type="date" class="sync-input" />
+            <span>至</span>
+            <input v-model="syncToDate" type="date" class="sync-input" />
+          </div>
+          <div class="sync-actions">
+            <button
+              @click="handleSync"
+              :disabled="isSyncing"
+              class="btn-sync"
+            >
+              <span v-if="!isSyncing">🔄 同步 GitHub 数据</span>
+              <span v-else>同步中...</span>
+            </button>
+            <p v-if="syncMessage" :class="['sync-message', syncMessageType]">
+              {{ syncMessage }}
+            </p>
+          </div>
         </div>
 
         <!-- 图表 -->
         <div class="charts-section">
-          <GithubDailyChart title="GitHub 每日活动统计" />
+          <GithubDailyChart title="GitHub 每日活动统计" :reload-key="chartReloadKey" />
         </div>
       </div>
     </main>
@@ -74,10 +84,18 @@ import { ref, computed, onMounted } from 'vue'
 import Header from '@/components/Header.vue'
 import GithubDailyChart from '@/components/charts/GithubDailyChart.vue'
 import { syncGithubData, getDailyStats } from '@/api/github'
+import { useSettingsStore } from '@/stores/settings'
 
 const isSyncing = ref(false)
 const syncMessage = ref<string | null>(null)
+const syncMessageType = ref<'success' | 'error' | null>(null)
 const stats = ref<any[]>([])
+const settingsStore = useSettingsStore()
+const today = new Date()
+const oneYearAgo = new Date(today.getTime() - 365 * 24 * 60 * 60 * 1000)
+const syncToDate = ref(settingsStore.defaultToDate || today.toISOString().split('T')[0])
+const syncFromDate = ref(settingsStore.defaultFromDate || oneYearAgo.toISOString().split('T')[0])
+const chartReloadKey = ref(0)
 
 const totalStats = computed(() => {
   return {
@@ -91,13 +109,27 @@ const totalStats = computed(() => {
 async function handleSync() {
   isSyncing.value = true
   syncMessage.value = null
+  syncMessageType.value = null
+
+  if (new Date(syncFromDate.value) > new Date(syncToDate.value)) {
+    syncMessage.value = '开始日期不能晚于结束日期'
+    syncMessageType.value = 'error'
+    isSyncing.value = false
+    return
+  }
 
   try {
-    const result = await syncGithubData()
-    syncMessage.value = `✓ 同步成功！更新了 ${result.repos_count} 个仓库，${result.stats_updated} 条统计记录`
+    const result = await syncGithubData({
+      fromDate: syncFromDate.value,
+      toDate: syncToDate.value,
+      mode: settingsStore.syncMode,
+    })
+    syncMessage.value = `✓ 同步成功（${result.date_range}）。更新了 ${result.repos_count} 个仓库，${result.stats_updated} 条统计记录`
+    syncMessageType.value = 'success'
 
     // 重新加载数据
     await loadStats()
+    chartReloadKey.value += 1
 
     // 3 秒后清除消息
     setTimeout(() => {
@@ -105,6 +137,7 @@ async function handleSync() {
     }, 3000)
   } catch (error: any) {
     syncMessage.value = `✗ 同步失败: ${error.response?.data?.detail || '未知错误'}`
+    syncMessageType.value = 'error'
   } finally {
     isSyncing.value = false
   }
@@ -222,8 +255,8 @@ onMounted(() => {
 .sync-section {
   margin-bottom: 30px;
   display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .btn-sync {
@@ -255,6 +288,26 @@ onMounted(() => {
 
 .sync-message.error {
   color: #e74c3c;
+}
+
+.sync-controls,
+.sync-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sync-input {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.sync-label {
+  font-size: 14px;
+  color: #555;
 }
 
 /* 图表部分 */

@@ -19,6 +19,21 @@ router = APIRouter(prefix="/github", tags=["github"])
 
 @router.post("/sync")
 async def sync_github(
+    from_date: Optional[str] = Query(
+        None,
+        description="开始日期 (YYYY-MM-DD)，默认为 90 天前",
+        regex=r"^\d{4}-\d{2}-\d{2}$",
+    ),
+    to_date: Optional[str] = Query(
+        None,
+        description="结束日期 (YYYY-MM-DD)，默认为今天",
+        regex=r"^\d{4}-\d{2}-\d{2}$",
+    ),
+    mode: str = Query(
+        "standard",
+        description="同步模式：standard（90 天内 GitHub events），deep（任意时间段，耗时更长）",
+        regex=r"^(standard|deep)$",
+    ),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> GithubSyncResponse:
@@ -36,13 +51,41 @@ async def sync_github(
         HTTPException: 如果同步过程中出现错误
     """
     try:
-        repos_count, stats_updated = await sync_github_data(current_user, db)
+        # 解析日期范围
+        if to_date:
+            end_date = datetime.strptime(to_date, "%Y-%m-%d").date()
+        else:
+            end_date = datetime.now().date()
+
+        if from_date:
+            start_date = datetime.strptime(from_date, "%Y-%m-%d").date()
+        else:
+            # deep 模式默认近 365 天；standard 模式默认近 90 天
+            default_days = 365 if mode == "deep" else 90
+            start_date = end_date - timedelta(days=default_days)
+
+        if start_date > end_date:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="开始日期不能晚于结束日期",
+            )
+
+        repos_count, stats_updated = await sync_github_data(
+            current_user,
+            db,
+            start_date=start_date,
+            end_date=end_date,
+            days=(end_date - start_date).days + 1,
+            mode=mode,
+        )
+
+        date_range = f"{start_date} 至 {end_date}"
 
         return GithubSyncResponse(
             message="GitHub 数据同步成功",
             repos_count=repos_count,
             stats_updated=stats_updated,
-            date_range="最近 90 天",
+            date_range=date_range,
         )
 
     except Exception as e:

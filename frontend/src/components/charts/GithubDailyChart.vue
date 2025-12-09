@@ -51,10 +51,12 @@ import type { GithubDailyStat } from '@/api/github'
 
 interface Props {
   title?: string
+  reloadKey?: number
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   title: 'GitHub 每日提交统计',
+  reloadKey: 0,
 })
 
 const chartRef = ref<HTMLElement>()
@@ -206,6 +208,13 @@ onMounted(() => {
   loadData()
   window.addEventListener('resize', handleResize)
 })
+
+watch(
+  () => props.reloadKey,
+  () => {
+    loadData()
+  }
+)
 
 // 清理
 watch(

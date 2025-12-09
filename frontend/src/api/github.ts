@@ -24,11 +24,23 @@ export interface GithubSyncResponse {
   date_range: string
 }
 
+export interface SyncGithubParams {
+  fromDate?: string
+  toDate?: string
+  mode?: 'standard' | 'deep'
+}
+
 /**
- * 同步 GitHub 数据
+ * 同步 GitHub 数据（支持自定义时间范围）
  */
-export async function syncGithubData(): Promise<GithubSyncResponse> {
-  const response = await client.post<GithubSyncResponse>('/github/sync')
+export async function syncGithubData(params?: SyncGithubParams): Promise<GithubSyncResponse> {
+  const response = await client.post<GithubSyncResponse>('/github/sync', null, {
+    params: {
+      from_date: params?.fromDate,
+      to_date: params?.toDate,
+      mode: params?.mode,
+    },
+  })
   return response.data
 }
 

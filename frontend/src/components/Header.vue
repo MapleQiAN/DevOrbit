@@ -9,7 +9,9 @@
         <router-link to="/dashboard" class="nav-link" active-class="active">
           仪表盘
         </router-link>
-        <!-- 后续可以添加更多导航项 -->
+        <router-link to="/settings" class="nav-link" active-class="active">
+          设置
+        </router-link>
       </nav>
 
       <div class="header-actions">
@@ -39,6 +41,9 @@
               </div>
             </div>
             <div class="dropdown-divider"></div>
+            <button @click="goSettings" class="dropdown-item">
+              设置
+            </button>
             <button @click="handleLogout" class="dropdown-item logout">
               退出登录
             </button>
@@ -68,6 +73,11 @@ function handleLogout() {
   authStore.logout()
   showUserMenu.value = false
   router.push('/login')
+}
+
+function goSettings() {
+  showUserMenu.value = false
+  router.push('/settings')
 }
 
 // 点击其他地方关闭菜单
