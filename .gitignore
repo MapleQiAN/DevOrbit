@@ -1,0 +1,160 @@
+# ============================================================================
+# Python 后端 (.gitignore)
+# ============================================================================
+
+# 环境变量文件
+.env
+.env.local
+.env.*.local
+
+# Python 虚拟环境
+venv/
+env/
+ENV/
+.venv
+.env.venv
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# 编译文件
+*.egg-info/
+dist/
+build/
+*.egg
+
+# IDE 和编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# 数据库文件
+*.db
+*.sqlite
+*.sqlite3
+devorbit.db
+
+# 日志文件
+*.log
+logs/
+
+# 测试覆盖率
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Alembic 迁移相关
+alembic/versions/__pycache__/
+
+# 临时文件
+*.tmp
+*.bak
+*.swp
+tmp/
+temp/
+
+# ============================================================================
+# Node.js 前端
+# ============================================================================
+
+# 依赖
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# 构建输出
+dist/
+dist-ssr/
+*.local
+
+# 编辑器目录
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 环境变量
+.env.local
+.env.*.local
+
+# ============================================================================
+# 操作系统
+# ============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+
+# ============================================================================
+# 项目特定
+# ============================================================================
+
+# 本地测试文件
+test_*.py
+*_test.py
+
+# 临时数据
+temp_data/
+uploads/
+downloads/
+
+# 密钥和敏感信息
+*.key
+*.pem
+*.crt
+secrets/
+credentials/
+
+# IDE 工作区
+.workspace
+.idea/workspace.xml
+.idea/tasks.xml
+
+# 构建工件
+*.tar.gz
+*.zip
+*.rar
+
+# ============================================================================
+# 特定文件
+# ============================================================================
+
+# 不忽略这些文件（使用 ! 前缀）
+!.gitkeep
+!.env.example
+!backend/.env.example
+
